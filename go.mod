@@ -1,7 +1,7 @@
 module iservice
 
 require (
-	github.com/irisnet/irishub-sdk-go v0.0.0-20200221012424-169734889e83
+	github.com/irisnet/irishub-sdk-go v0.0.0-20200227041412-a8c50178a68d
 	github.com/spf13/cobra v0.0.5
 )
 
