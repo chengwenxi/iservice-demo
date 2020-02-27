@@ -44,6 +44,10 @@ func startCmd() *cobra.Command {
 			baseTx := sdk.BaseTx{
 				From:     args[0],
 				Password: args[1],
+				Gas:      Gas,
+				Fee:      Fee,
+				Memo:     "service",
+				Mode:     Mode,
 			}
 			node.Start(config, baseTx)
 			return nil
@@ -53,9 +57,6 @@ func startCmd() *cobra.Command {
 }
 
 const (
-	Addr    = "faa1d3mf696gvtwq2dfx03ghe64akf6t5vyz6pe3le"
-	ValAddr = "iva1x3f572u057lv88mva2q3z40ls8pup9hsg0lxcp"
-	PrivKey = "927be78a5f5b63bb95ff34ed9c6e4b39b6af6d2f9f59731452de659cac9b19db"
 	NodeURI = "localhost:26657"
 	ChainID = "test"
 	Online  = true
