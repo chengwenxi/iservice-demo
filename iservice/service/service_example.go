@@ -1,6 +1,11 @@
 package service
 
-import "github.com/irisnet/irishub-sdk-go/types"
+import (
+	"encoding/json"
+	"math/rand"
+
+	"github.com/irisnet/irishub-sdk-go/types"
+)
 
 var serviceMap = make(map[string]types.ServiceRespondHandler)
 
@@ -17,5 +22,10 @@ func GetServiceCallBack(serviceName string) types.ServiceRespondHandler {
 }
 
 func priceService(input string) (output string, errMsg string) {
-	return "", ""
+	outputBz, _ := json.Marshal(Output{Price: 100 * rand.Float32()})
+	return string(outputBz), ""
+}
+
+type Output struct {
+	Price float32 `json:"price"`
 }

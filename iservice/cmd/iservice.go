@@ -30,24 +30,28 @@ func startCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "start",
 		Short:   "start daemon",
-		Example: `iservice start --node <tendermint rpc>`,
+		Example: `iservice start [key_name] [tendermint_rpc]`,
+		Args:    cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			nodeURI := NodeURI
+			if len(args) > 1 {
+				nodeURI = args[1]
+			}
 			config := sdk.SDKConfig{
-				NodeURI: NodeURI,
+				NodeURI: nodeURI,
 				Network: Network,
 				ChainID: ChainID,
 				Gas:     Gas,
 				Fee:     Fee,
 				Mode:    Mode,
 				Online:  Online,
+				KeyDAO:  keys.NewKeyDAO(),
 			}
 			baseTx := sdk.BaseTx{
-				From:     args[0],
-				Password: args[1],
-				Gas:      Gas,
-				Fee:      Fee,
-				Memo:     "service",
-				Mode:     Mode,
+				From: args[0],
+				Gas:  Gas,
+				Fee:  Fee,
+				Mode: Mode,
 			}
 			node.Start(config, baseTx)
 			return nil

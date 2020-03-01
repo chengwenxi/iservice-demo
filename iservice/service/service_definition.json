@@ -1,1 +1,23 @@
-{"input":{"type":"object"},"output":{"type":"object"},"error":{"type":"object"}}
+{
+  "input": {
+    "type": "object",
+    "properties": {
+      "denom": {
+        "description": "token denom",
+        "type": "string"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "price": {
+        "description": "price",
+        "type": "number"
+      }
+    }
+  },
+  "error": {
+    "type": "object"
+  }
+}
