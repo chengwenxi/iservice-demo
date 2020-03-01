@@ -10,13 +10,15 @@ import (
 	"github.com/irisnet/irishub-sdk-go/types"
 )
 
+var keysPath = os.ExpandEnv(filepath.Join("$HOME", ".iservice"))
+
 type KeyDAO struct {
 	Path string // the Path to store keys
 }
 
-func NewKeyDAO(path string) KeyDAO {
+func NewKeyDAO() KeyDAO {
 	return KeyDAO{
-		Path: path,
+		Path: keysPath,
 	}
 }
 
@@ -58,12 +60,12 @@ func (dao KeyDAO) Read(name string) (types.Store, error) {
 		return nil, err
 	}
 
-	var keystoreInfo types.KeystoreInfo
-	err = json.Unmarshal(contentByte, &keystoreInfo)
+	var keyInfo types.KeyInfo
+	err = json.Unmarshal(contentByte, &keyInfo)
 	if err != nil {
 		return nil, err
 	}
-	return keystoreInfo, nil
+	return keyInfo, nil
 }
 
 func (dao KeyDAO) Delete(name string) error {

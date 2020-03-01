@@ -1,15 +1,12 @@
 package keys
 
 import (
-	"os"
-	"path/filepath"
+	"fmt"
 
 	"github.com/irisnet/irishub-sdk-go/crypto"
 	"github.com/irisnet/irishub-sdk-go/types"
 	"github.com/spf13/cobra"
 )
-
-var keysPath = os.ExpandEnv(filepath.Join("$HOME", ".iservice"))
 
 func Commands() *cobra.Command {
 	cmd := &cobra.Command{
@@ -29,7 +26,7 @@ func addKeyCommand() *cobra.Command {
 		Use:   "add [name]",
 		Short: "Create a new key",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			keyDao := NewKeyDAO(keysPath)
+			keyDao := NewKeyDAO()
 			keyManager, err := crypto.NewKeyManager()
 			if err != nil {
 				return err
@@ -42,10 +39,16 @@ func addKeyCommand() *cobra.Command {
 				return err
 			}
 			keyInfo.PrivKey = privateKey
+			keyInfo.Address = types.AccAddress(keyManager.GetPrivKey().PubKey().Address()).String()
 			err = keyDao.Write(args[0], keyInfo)
 			if err != nil {
 				return err
 			}
+			mnemonic, _ := keyManager.ExportAsMnemonic()
+			fmt.Printf(`add key %s successful.
+address: %s
+mnemonic: %s
+`, args[0], keyInfo.Address, mnemonic)
 			return nil
 		},
 	}
