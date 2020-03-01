@@ -38,7 +38,7 @@ sed -i '_bak' 's/150000000000000000000iris-atto/150000000000000000000000000iris-
 iris start --home mytestnet/node0/iris
 ```
 
-### define % bind service
+### define、bind service & create oracle
 ```bash
 # set service name
 service_name=price_service
