@@ -2,7 +2,9 @@ package service
 
 import (
 	"encoding/json"
-	"math/rand"
+	"errors"
+	"fmt"
+	"iservice/iservice/market"
 
 	"github.com/irisnet/irishub-sdk-go/types"
 )
@@ -22,10 +24,25 @@ func GetServiceCallBack(serviceName string) types.ServiceRespondHandler {
 }
 
 func priceService(input string) (output string, errMsg string) {
-	outputBz, _ := json.Marshal(Output{Price: 100 * rand.Float32()})
-	return string(outputBz), ""
+	var request Input
+	err := json.Unmarshal([]byte(input), &request)
+	if err != nil {
+		return "", errors.New(fmt.Sprintf("can not parse input json string : %s", err.Error())).Error()
+	}
+
+	// get price from public market
+	mk := market.GetMarket()
+	price, errMsg := mk.GetPrice(request.Base, request.Quote)
+
+	outputBz, _ := json.Marshal(Output{Price: price})
+	return string(outputBz), errMsg
+}
+
+type Input struct {
+	Base  string `json:"base"`
+	Quote string `json:"quote"`
 }
 
 type Output struct {
-	Price float32 `json:"price"`
+	Price float64 `json:"price"`
 }

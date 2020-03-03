@@ -2,8 +2,12 @@
   "input": {
     "type": "object",
     "properties": {
-      "denom": {
-        "description": "token denom",
+      "base": {
+        "description": "base token denom",
+        "type": "string"
+      },
+      "quote": {
+        "description": "quote token denom",
         "type": "string"
       }
     }
@@ -18,6 +22,6 @@
     }
   },
   "error": {
-    "type": "object"
+    "type": "string"
   }
 }
