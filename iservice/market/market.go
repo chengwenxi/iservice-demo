@@ -22,7 +22,7 @@ func GetMarket() Market {
 	switch MarketType {
 	case "huobi":
 		return huobi.HuobiMarket{}
-	case "bian":
+	case "binance":
 		return bian.BianMarket{}
 	default:
 		return EmptyMarket{}

@@ -92,7 +92,7 @@ iservice start provider2 binance &
 # create & start oracle feed
 ```bash
 feed_name=link_usdt
-iriscli oracle create --chain-id test --from acct0 --fee 0.3iris  --feed-name $feed_name --latest-history 10 --service-name $service_name --input "{\"base\":\"link\",\"quote\":\"usdt\"}" --providers $(iriscli keys show provider1 -o json | jq -r '.address'),$(iriscli keys show provider2 -o json | jq -r '.address') --threshold 2 --service-fee-cap 1iris --timeout 2 --frequency 5 --total -1  --aggregate-func "avg" --value-json-path "price" --commit
+iriscli oracle create --chain-id test --from acct0 --fee 0.3iris  --feed-name $feed_name --latest-history 10 --service-name $service_name --input "{\"base\":\"link\",\"quote\":\"usdt\"}" --providers $(iriscli keys show provider1 -o json | jq -r '.address'),$(iriscli keys show provider2 -o json | jq -r '.address') --threshold 2 --service-fee-cap 1iris --timeout 2 --frequency 5 --total -1 --aggregate-func "avg" --value-json-path "price" --commit
 
 # query feed
 iriscli oracle query-feed $feed_name
