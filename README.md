@@ -6,6 +6,7 @@ iservice demo - iservice daemon for service provider
 git clone https://github.com/irisnet/irishub.git
 cd irishub
 git checkout -b develop origin/develop
+source scripts/setTestEnv.sh
 make install
 ```
 
@@ -16,65 +17,91 @@ make install
 
 ## RUNNING
 
-### generate a new key
+### generate two provider keys
 ```bash
-iservice keys add iservice
+iservice keys add provider1
+iservice keys add provider2
 ```
 * copy the mnemonic and address
 ```bash
-provider_addr=<your_address>
+provider1_addr=<your_provider1_address>
+provider2_addr=<your_provider2_address>
 ```
 
 
 ### start node
 ```bash
 # init node
-iris testnet --v 1 --chain-id test
+iriscli keys add acct0
+iris init --chain-id test --moniker acct0
+iris gentx --amount 100iris --name acct0
+iris add-genesis-account $(iriscli keys show acct0 -o json | jq -r '.address') 2000000000iris
+iris collect-gentxs
 
-# modify token amount
-sed -i '_bak' 's/150000000000000000000iris-atto/150000000000000000000000000iris-atto/' mytestnet/node0/iris/config/genesis.json
+# add acct0 as profiler
+sed -i '' "s/faa108w3x8/$(iriscli keys show acct0 -o json | jq -r '.address')/" ~/.iris/config/genesis.json
 
 # start node
-iris start --home mytestnet/node0/iris
+iris start
 ```
 
-### define、bind service & create oracle
+### Create key pair for service providers
+```bash
+# generate provider1 address
+iservice keys add provider1
+
+# add provider1 accout in iriscli (use the above mnemonic)
+iriscli keys add provider1 --recover
+
+# generate provider2 address
+iservice keys add provider2
+
+# add provider2 accout in iriscli (use the above mnemonic)
+iriscli keys add provider2 --recover
+```
+
+### create service definition
 ```bash
 # set service name
 service_name=price_service
 
-# recover your address (iservice key)
-iriscli keys add iservice --recover --home mytestnet/node0/iriscli
-
-# send 1000000iris to iservice address
-iriscli bank send --from node0 --to $provider_addr --amount 1000000iris --chain-id test --fee 0.3iris --commit --home mytestnet/node0/iriscli/
-
 # define service 
-iriscli service define --chain-id test --from iservice --fee 0.3iris --name $service_name --description="provide token price" --tags=price --schemas=iservice/service/service_definition.json --commit --home mytestnet/node0/iriscli/
+iriscli service define --chain-id test --from acct0 --fee 0.3iris --name $service_name --description="provide token price" --tags=price --schemas=iservice/service/service_definition.json --commit
+```
+
+### create service binding
+```bash
+# send 1000000iris to provider address
+iriscli bank send --from acct0 --to $(iriscli keys show provider1 -o json | jq -r '.address') --amount 1000000iris --chain-id test --fee 0.3iris --commit
+iriscli bank send --from acct0 --to $(iriscli keys show provider2 -o json | jq -r '.address') --amount 1000000iris --chain-id test --fee 0.3iris --commit
 
 # bind service
-iriscli service bind --chain-id test --from iservice --fee 0.3iris --service-name $service_name --deposit=10000iris --pricing iservice/service/service_pricing.json --commit --home mytestnet/node0/iriscli/
+iriscli service bind --chain-id test --from provider1 --fee 0.3iris --service-name $service_name --deposit=10000iris --pricing iservice/service/service_pricing.json --commit
+iriscli service bind --chain-id test --from provider2 --fee 0.3iris --service-name $service_name --deposit=10000iris --pricing iservice/service/service_pricing.json --commit
 
-# qury binding
-iriscli service binding $service_name $provider_addr
+# qury bindings
+iriscli service bindings $service_name
+```
 
-# create feed
-feed_name=price
-iriscli oracle create --chain-id test --from node0 --fee 0.3iris  --feed-name $feed_name --latest-history 10 --service-name $service_name --input "{\"denom\":\"iris\"}" --providers $provider_addr --threshold 1 --service-fee-cap 1iris --timeout 2 --frequency 5 --total -1  --aggregate-func "avg" --value-json-path "price" --commit --home mytestnet/node0/iriscli/
+### start iservice daemon
+```bash
+iservice start provider1 huobi &
+iservice start provider2 binance &
+```
+
+# create & start oracle feed
+```bash
+feed_name=link_usdt
+iriscli oracle create --chain-id test --from acct0 --fee 0.3iris  --feed-name $feed_name --latest-history 10 --service-name $service_name --input "{\"base\":\"link\",\"quote\":\"usdt\"}" --providers $(iriscli keys show provider1 -o json | jq -r '.address'),$(iriscli keys show provider2 -o json | jq -r '.address') --threshold 2 --service-fee-cap 1iris --timeout 2 --frequency 5 --total -1  --aggregate-func "avg" --value-json-path "price" --commit
 
 # query feed
 iriscli oracle query-feed $feed_name
 
 # start feed  
-iriscli oracle start $feed_name --chain-id test --from node0 --fee 0.3iris --commit --home mytestnet/node0/iriscli/
+iriscli oracle start $feed_name --chain-id test --from acct0 --fee 0.3iris --commit
 
 # query feed (state to running)
 iriscli oracle query-feed $feed_name
-```
-
-### start iservice demo
-```bash
-iservice start iservice
 ```
 
 ### query feed value
