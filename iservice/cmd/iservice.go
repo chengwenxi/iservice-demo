@@ -2,6 +2,7 @@ package main
 
 import (
 	"iservice/iservice/cmd/keys"
+	"iservice/iservice/market"
 	"iservice/iservice/node"
 	"os"
 
@@ -30,15 +31,15 @@ func startCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "start",
 		Short:   "start daemon",
-		Example: `iservice start [key_name] [tendermint_rpc]`,
+		Example: `iservice start [key_name] [market]`,
 		Args:    cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			nodeURI := NodeURI
+			// set market
 			if len(args) > 1 {
-				nodeURI = args[1]
+				market.MarketType = args[1]
 			}
 			config := sdk.SDKConfig{
-				NodeURI: nodeURI,
+				NodeURI: NodeURI,
 				Network: Network,
 				ChainID: ChainID,
 				Gas:     Gas,
