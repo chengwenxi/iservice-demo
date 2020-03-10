@@ -34,6 +34,10 @@ func priceService(input string) (output string, errMsg string) {
 	mk := market.GetMarket()
 	price, errMsg := mk.GetPrice(request.Base, request.Quote)
 
+	if len(errMsg) > 0 {
+		return "", errMsg
+	}
+
 	outputBz, _ := json.Marshal(Output{Price: price})
 	return string(outputBz), errMsg
 }
