@@ -17,18 +17,6 @@ make install
 
 ## RUNNING
 
-### generate two provider keys
-```bash
-iservice keys add provider1
-iservice keys add provider2
-```
-* copy the mnemonic and address
-```bash
-provider1_addr=<your_provider1_address>
-provider2_addr=<your_provider2_address>
-```
-
-
 ### start node
 ```bash
 # init node
