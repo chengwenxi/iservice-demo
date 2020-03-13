@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"iservice/iservice/market"
 
-	"github.com/irisnet/irishub-sdk-go/types"
+	"github.com/irisnet/irishub-sdk-go/rpc"
 )
 
-var serviceMap = make(map[string]types.ServiceRespondHandler)
+var serviceMap = make(map[string]rpc.ServiceRespondHandler)
 
 const (
 	PriceServiceName = "price_service"
@@ -19,7 +19,7 @@ func init() {
 	serviceMap[PriceServiceName] = priceService
 }
 
-func GetServiceCallBack(serviceName string) types.ServiceRespondHandler {
+func GetServiceCallBack(serviceName string) rpc.ServiceRespondHandler {
 	return serviceMap[serviceName]
 }
 

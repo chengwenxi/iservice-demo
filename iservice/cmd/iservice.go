@@ -46,6 +46,7 @@ func startCmd() *cobra.Command {
 				Fee:     Fee,
 				Mode:    Mode,
 				Online:  Online,
+				Level:   "debug",
 				KeyDAO:  keys.NewKeyDAO(),
 			}
 			baseTx := sdk.BaseTx{
@@ -61,12 +62,16 @@ func startCmd() *cobra.Command {
 	return cmd
 }
 
+var (
+	feeAmt, _ = sdk.NewIntFromString("600000000000000000")
+	Fee       = sdk.NewCoins(sdk.NewCoin("iris-atto", feeAmt))
+)
+
 const (
 	NodeURI = "localhost:26657"
 	ChainID = "test"
 	Online  = true
 	Network = sdk.Testnet
 	Mode    = sdk.Commit
-	Fee     = "600000000000000000iris-atto"
 	Gas     = 20000
 )

@@ -15,8 +15,8 @@ func Commands() *cobra.Command {
 	}
 	cmd.AddCommand(
 		addKeyCommand(),
-		listKeysCmd(),
-		deleteKeyCommand(),
+		//listKeysCmd(),
+		//deleteKeyCommand(),
 	)
 	return cmd
 }
