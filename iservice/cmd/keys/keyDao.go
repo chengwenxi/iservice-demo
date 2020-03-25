@@ -48,7 +48,7 @@ func (dao KeyDAO) Write(name string, store types.Store) error {
 	return nil
 }
 
-func (dao KeyDAO) Read(name string,password string) (types.Store, error) {
+func (dao KeyDAO) Read(name string) (types.Store, error) {
 	filePath := dao.Path + string(os.PathSeparator) + name + ".json"
 	f, err := os.OpenFile(filePath, os.O_RDONLY, 0600)
 	defer f.Close()
@@ -68,8 +68,16 @@ func (dao KeyDAO) Read(name string,password string) (types.Store, error) {
 	return keyInfo, nil
 }
 
-func (dao KeyDAO) Delete(name string,password string) error {
+func (dao KeyDAO) Delete(name string) error {
 	filePath := dao.Path + string(os.PathSeparator) + name + ".json"
 	err := os.Remove(filePath)
 	return err
+}
+
+func (dao KeyDAO) Encrypt(data string, password string) (string, error) {
+	return data, nil
+}
+
+func (dao KeyDAO) Decrypt(data string, password string) (string, error) {
+	return data, nil
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"iservice/iservice/market"
 
@@ -23,11 +22,15 @@ func GetServiceCallBack(serviceName string) rpc.ServiceRespondHandler {
 	return serviceMap[serviceName]
 }
 
-func priceService(input string) (output string, errMsg string) {
+func priceService(reqCtxID, reqID, input string) (output string, result string) {
 	var request Input
+	res := Result{
+		Code: 200,
+	}
 	err := json.Unmarshal([]byte(input), &request)
 	if err != nil {
-		return "", errors.New(fmt.Sprintf("can not parse input json string : %s", err.Error())).Error()
+		res.Code = 400
+		res.Message = fmt.Sprintf("can not parse request [%s] input json string : %s", reqID, err.Error())
 	}
 
 	// get price from public market
@@ -35,11 +38,18 @@ func priceService(input string) (output string, errMsg string) {
 	price, errMsg := mk.GetPrice(request.Base, request.Quote)
 
 	if len(errMsg) > 0 {
-		return "", errMsg
+		res.Code = 500
+		res.Message = errMsg
 	}
 
-	outputBz, _ := json.Marshal(Output{Price: price})
-	return string(outputBz), errMsg
+	if res.Code == 200 {
+		outputBz, _ := json.Marshal(Output{Price: price})
+		output = string(outputBz)
+	}
+
+	resBz, _ := json.Marshal(res)
+	result = string(resBz)
+	return output, result
 }
 
 type Input struct {
@@ -49,4 +59,9 @@ type Input struct {
 
 type Output struct {
 	Price float64 `json:"price"`
+}
+
+type Result struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }

@@ -45,15 +45,15 @@ func startCmd() *cobra.Command {
 				Gas:     Gas,
 				Fee:     Fee,
 				Mode:    Mode,
-				Online:  Online,
 				Level:   "debug",
 				KeyDAO:  keys.NewKeyDAO(),
 			}
 			baseTx := sdk.BaseTx{
-				From: args[0],
-				Gas:  Gas,
-				Fee:  Fee,
-				Mode: Mode,
+				From:     args[0],
+				Gas:      Gas,
+				Fee:      Fee,
+				Mode:     Mode,
+				Password: "",
 			}
 			node.Start(config, baseTx)
 			return nil
@@ -64,7 +64,7 @@ func startCmd() *cobra.Command {
 
 var (
 	feeAmt, _ = sdk.NewIntFromString("600000000000000000")
-	Fee       = sdk.NewCoins(sdk.NewCoin("iris-atto", feeAmt))
+	Fee       = sdk.NewDecCoins(sdk.NewDecCoin("iris-atto", feeAmt))
 )
 
 const (
