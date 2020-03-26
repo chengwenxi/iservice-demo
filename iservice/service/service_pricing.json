@@ -1,1 +1,3 @@
-{"price":[{"denom":"iris-atto","amount":"1000000000000000000"}]}
+{
+  "price": "0.5iris"
+}

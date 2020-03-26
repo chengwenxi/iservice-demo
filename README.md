@@ -64,8 +64,8 @@ iriscli bank send --from acct0 --to $(iriscli keys show provider1 -o json | jq -
 iriscli bank send --from acct0 --to $(iriscli keys show provider2 -o json | jq -r '.address') --amount 1000000iris --chain-id test --fee 0.3iris --commit
 
 # bind service
-iriscli service bind --chain-id test --from provider1 --fee 0.3iris --service-name $service_name --deposit=100000iris --pricing iservice/service/service_pricing.json --commit
-iriscli service bind --chain-id test --from provider2 --fee 0.3iris --service-name $service_name --deposit=100000iris --pricing iservice/service/service_pricing.json --commit
+iriscli service bind --chain-id test --from provider1 --fee 0.3iris --service-name $service_name --deposit=100000iris --min-resp-time=2 --pricing iservice/service/service_pricing.json --commit
+iriscli service bind --chain-id test --from provider2 --fee 0.3iris --service-name $service_name --deposit=100000iris --min-resp-time=2 --pricing iservice/service/service_pricing.json --commit
 
 # qury bindings
 iriscli service bindings $service_name
