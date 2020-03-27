@@ -73,5 +73,5 @@ const (
 	Online  = true
 	Network = sdk.Testnet
 	Mode    = sdk.Commit
-	Gas     = 20000
+	Gas     = 100000
 )
