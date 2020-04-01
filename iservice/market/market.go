@@ -3,17 +3,18 @@ package market
 import (
 	"iservice/iservice/market/bian"
 	"iservice/iservice/market/huobi"
+	"math/rand"
 )
 
 type Market interface {
 	GetPrice(base string, quote string) (price float64, error string)
 }
 
-type EmptyMarket struct {
+type RandomMarket struct {
 }
 
-func (market EmptyMarket) GetPrice(base string, quote string) (price float64, error string) {
-	return 0, ""
+func (market RandomMarket) GetPrice(base string, quote string) (price float64, error string) {
+	return rand.Float64(), ""
 }
 
 var MarketType string
@@ -25,6 +26,6 @@ func GetMarket() Market {
 	case "binance":
 		return bian.BianMarket{}
 	default:
-		return EmptyMarket{}
+		return RandomMarket{}
 	}
 }

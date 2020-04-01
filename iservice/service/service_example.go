@@ -8,7 +8,7 @@ import (
 	"github.com/irisnet/irishub-sdk-go/rpc"
 )
 
-var serviceMap = make(map[string]rpc.ServiceRespondHandler)
+var serviceMap = make(map[string]rpc.ServiceRespondCallback)
 
 const (
 	PriceServiceName = "price_service"
@@ -18,7 +18,7 @@ func init() {
 	serviceMap[PriceServiceName] = priceService
 }
 
-func GetServiceCallBack(serviceName string) rpc.ServiceRespondHandler {
+func GetServiceCallBack(serviceName string) rpc.ServiceRespondCallback {
 	return serviceMap[serviceName]
 }
 

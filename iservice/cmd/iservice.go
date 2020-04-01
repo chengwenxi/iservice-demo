@@ -6,7 +6,7 @@ import (
 	"iservice/iservice/node"
 	"os"
 
-	sdk "github.com/irisnet/irishub-sdk-go/types"
+	"github.com/irisnet/irishub-sdk-go/types"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func startCmd() *cobra.Command {
 			if len(args) > 1 {
 				market.MarketType = args[1]
 			}
-			config := sdk.SDKConfig{
+			config := types.ClientConfig{
 				NodeURI: NodeURI,
 				Network: Network,
 				ChainID: ChainID,
@@ -48,7 +48,7 @@ func startCmd() *cobra.Command {
 				Level:   "debug",
 				KeyDAO:  keys.NewKeyDAO(),
 			}
-			baseTx := sdk.BaseTx{
+			baseTx := types.BaseTx{
 				From:     args[0],
 				Gas:      Gas,
 				Fee:      Fee,
@@ -63,15 +63,15 @@ func startCmd() *cobra.Command {
 }
 
 var (
-	feeAmt, _ = sdk.NewIntFromString("600000000000000000")
-	Fee       = sdk.NewDecCoins(sdk.NewDecCoin("iris-atto", feeAmt))
+	feeAmt, _ = types.NewIntFromString("600000000000000000")
+	Fee       = types.NewDecCoins(types.NewDecCoin("iris-atto", feeAmt))
 )
 
 const (
 	NodeURI = "localhost:26657"
 	ChainID = "test"
 	Online  = true
-	Network = sdk.Testnet
-	Mode    = sdk.Commit
+	Network = types.Testnet
+	Mode    = types.Async
 	Gas     = 100000
 )

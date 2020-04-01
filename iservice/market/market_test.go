@@ -31,6 +31,5 @@ func TestGetMarket(t *testing.T) {
 	MarketType = ""
 	market = GetMarket()
 	price, err = market.GetPrice(base, quote)
-	require.Equal(t, float64(0), price)
 	require.Equal(t, "", err)
 }
